@@ -2,6 +2,9 @@ const express = require('express');
 const app = express();
 const mysql = require('mysql');
 const cors = require('cors');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -33,40 +36,54 @@ app.use(cookieParser());
 
 // 회원가입
 app.post("/api/user/register", (req, res) => {
-    connection.query(`INSERT INTO users (name, email, password, createdAt) VALUES(?, ?, ?, now())`, 
-    [req.body.name, req.body.email, req.body.password], 
-    (error, results, fields) => { 
-        if(error) {
-            console.log(error);
-            res.send({
-                status: "error",
-                
-            })
+    bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
+        if(err) {
+            console.log(err);
         } else {
-            res.send({
-                status: "success",
-            })
+            connection.query(`INSERT INTO users (name, email, password, createdAt) VALUES(?, ?, ?, now())`, 
+            [req.body.name, req.body.email, hash], 
+            (error, results, fields) => { 
+                if(error) {
+                    console.log(error);
+                    res.send({
+                        status: "error",
+                        
+                    })
+                } else {
+                    res.send({
+                        status: "success",
+                    })
+                }
+            });
         }
     });
 });
 
 // 로그인
 app.post("/api/user/login", (req, res) => {
-    connection.query(`SELECT * FROM users WHERE email = ? AND password = ?`,
-    [req.body.email, req.body.password],
+    connection.query(`SELECT * FROM users WHERE email = ?`,
+    [req.body.email],
     (error, results, fields) => {
         if(error) {
-            console.log(error);
             res.send({
                 status: "error",
             })
         } else {
             if(results.length > 0) {
-                res.send({
-                    status: "success",
-                    data: results[0]
-                })
+                bcrypt.compare(req.body.password, results[0].password, (err, response) => {
+                    if(response) {
+                        res.send({
+                            status: "success",
+                            data: results[0]
+                        })
+                    } else {
+                        res.send({
+                            status: "error",
+                        })
+                    }
+                });
             } else {
+                console.log("no user");
                 res.send({
                     status: "error",
                 })

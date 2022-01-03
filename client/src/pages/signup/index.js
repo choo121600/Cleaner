@@ -9,17 +9,19 @@ export class signup extends Component {
             password: '',
             confirmPassword: '',
             email: '',
+            emailReg: '',
+            passwordReg: '',
         }
     }
     render() {
         const register = () => {
-            if(this.state.password !== this.state.confirmPassword) {
+            if(this.state.passwordReg !== this.state.confirmPassword) {
                 alert('Password and Confirm Password do not match')
             } else {
                 Axios.post('http://localhost:5000/api/user/register', {
                     name: this.state.name,
-                    email: this.state.email,
-                    password: this.state.password,
+                    email: this.state.emailReg,
+                    password: this.state.passwordReg,
                 }).then(res => {
                     console.log(res)
                 }).catch(err => {
@@ -54,13 +56,13 @@ export class signup extends Component {
                         <input 
                             type='email' 
                             placeholder='Email'
-                            onChange={(e) => this.setState({email: e.target.value})}
+                            onChange={(e) => this.setState({emailReg: e.target.value})}
                         />
                         <label>Password</label>
                         <input 
                             type='password' 
                             placeholder='Password'
-                            onChange={(e) => this.setState({password: e.target.value})}
+                            onChange={(e) => this.setState({passwordReg: e.target.value})}
                         />
                         <label>Confirm Password</label>
                         <input 
