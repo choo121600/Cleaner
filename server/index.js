@@ -8,11 +8,33 @@ const saltRounds = 10;
 
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const session = require('express-session');
+
 const dotenv = require('dotenv');
 
 dotenv.config({ path:"./.env" });
 
-app.use(cors());
+app.use(express.json());
+
+app.use(cors({
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+    credentials: true
+}));
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cookieParser());
+
+app.use(session({
+    key: 'user_sid',
+    secret: 'somerandonstuffs',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        expires: 60 * 60 * 24
+    }
+}));
 
 const connection = mysql.createConnection({
     host: process.env.DB_HOST,
@@ -29,9 +51,7 @@ connection.connect( (error) => {
     }
 });
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(cookieParser());
+
 
 
 // 회원가입
@@ -60,6 +80,21 @@ app.post("/api/user/register", (req, res) => {
 });
 
 // 로그인
+app.get("/api/user/login", (req, res) => {
+    if  (req.session.user) {
+        res.send({
+            loggedIn: true,
+            user: req.session.user
+            });
+    } else {
+        res.send({
+            loggedIn: false,
+            user: null
+        });
+    }
+});
+
+
 app.post("/api/user/login", (req, res) => {
     connection.query(`SELECT * FROM users WHERE email = ?`,
     [req.body.email],
@@ -72,6 +107,8 @@ app.post("/api/user/login", (req, res) => {
             if(results.length > 0) {
                 bcrypt.compare(req.body.password, results[0].password, (err, response) => {
                     if(response) {
+                        req.session.user = results[0];
+                        console.log(req.session.user);
                         res.send({
                             status: "success",
                             data: results[0]
@@ -95,5 +132,8 @@ app.post("/api/user/login", (req, res) => {
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
+
+
+
 
 app.listen(5000);

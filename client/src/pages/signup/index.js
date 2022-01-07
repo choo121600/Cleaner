@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useEffect } from 'react'
 import Axios from 'axios'
 
 export class signup extends Component {
@@ -11,9 +11,24 @@ export class signup extends Component {
             email: '',
             emailReg: '',
             passwordReg: '',
+            loginStatus: false,
         }
     }
+    componentDidMount = () => {
+        Axios.get('http://localhost:5000/api/user/login').then(res => {
+            if (res.data.loggedIn) {
+                console.log(res)
+                this.setState({
+                    loginStatus: true,
+                })
+            }
+        }).catch(err => {
+            console.log(err)
+        })
+    }
+
     render() {
+        Axios.defaults.withCredentials = true
         const register = () => {
             if(this.state.passwordReg !== this.state.confirmPassword) {
                 alert('Password and Confirm Password do not match')
