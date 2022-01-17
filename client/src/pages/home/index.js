@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
+import MainLayout from '../../components/mainLayout'
 
 export class home extends Component {
     render() {
         return (
             <div>
-                Home
+                <MainLayout homeHeader>
+
+                </MainLayout>
             </div>
         )
     }
