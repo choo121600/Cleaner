@@ -60,8 +60,8 @@ app.post("/api/user/register", (req, res) => {
         if(err) {
             console.log(err);
         } else {
-            connection.query(`INSERT INTO users (name, email, password, createdAt) VALUES(?, ?, ?, now())`, 
-            [req.body.name, req.body.email, hash], 
+            connection.query(`INSERT INTO users (firstName, lastName, email, password, createdAt) VALUES(?, ?, ?, ?, now())`, 
+            [req.body.firstName, req.body.lastName, req.body.email, hash], 
             (error, results, fields) => { 
                 if(error) {
                     console.log(error);
