@@ -55,6 +55,7 @@ export const SignUpTitle = styled.div`
 `
 
 export const SignUpContainer = styled.div`
+    width: 90%;
     padding: 24px;
     border: 1px solid #e6e6e6;
     border-radius: 4px;
