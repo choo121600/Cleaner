@@ -31,6 +31,11 @@ export class signup extends Component {
             passwordReg: '',
         }
     }
+    handleChange = (e) => {
+        this.setState({
+            [e.target.name]: e.target.value
+        })
+    }
 
     render() {
         Axios.defaults.withCredentials = true
@@ -50,8 +55,6 @@ export class signup extends Component {
                 })
             }
         }
-
-
 
         return (
             <Container>
@@ -75,13 +78,23 @@ export class signup extends Component {
                                 <GroupContainer>
                                     <label htmlFor="firstName">First Name</label>
                                     <InputBox>
-                                        <input type="text" id="firstName" onChange={(e) => this.setState({firstName: e.target.value})}/>
+                                        <input 
+                                            name="firstName" 
+                                            type="text" 
+                                            id="firstName" 
+                                            onChange={(e) => this.handleChange(e)}
+                                        />
                                     </InputBox>
                                 </GroupContainer>
                                 <GroupContainer>
                                     <label htmlFor="lastName">Last Name</label>
                                     <InputBox>
-                                        <input type="text" id="lastName" onChange={(e) => this.setState({lastName: e.target.value})}/>
+                                        <input 
+                                            name='lastName' 
+                                            type="text" 
+                                            id="lastName" 
+                                            onChange={(e) => this.handleChange(e)}
+                                        />
                                     </InputBox>
                                 </GroupContainer>
                             </NameFormGroup>
@@ -89,8 +102,9 @@ export class signup extends Component {
                                 <label>Email</label>
                                 <InputBox>
                                     <input 
+                                        name='emailReg'
                                         type='email' 
-                                        onChange={(e) => this.setState({emailReg: e.target.value})}
+                                        onChange={(e) => this.handleChange(e)}
                                     />
                                 </InputBox>
                             </FormContainer>
@@ -98,8 +112,9 @@ export class signup extends Component {
                                 <label>Password</label>
                                 <InputBox>
                                     <input 
+                                        name='passwordReg'
                                         type='password' 
-                                        onChange={(e) => this.setState({passwordReg: e.target.value})}
+                                        onChange={(e) => this.handleChange(e)}
                                     />
                                 </InputBox>
                             </FormContainer>
@@ -107,8 +122,9 @@ export class signup extends Component {
                                 <label>Confirm Password</label>
                                 <InputBox>
                                     <input 
+                                        name='confirmPassword'
                                         type='password' 
-                                        onChange={(e) => this.setState({confirmPassword: e.target.value})}
+                                        onChange={(e) => this.handleChange(e)}
                                     />
                                 </InputBox>
                             </FormContainer>
